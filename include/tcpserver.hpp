@@ -19,15 +19,3 @@ namespace OpenSofa
       ConnectionListener * connectionListener;
   };
 }
-
-/*
-class BluetoothServer {
-
-}
-
-ServerFactory() {
-  createServer() {
-    return OmniServer(BluetoothServer(), TCPServer())
-  }
-}
-*/
