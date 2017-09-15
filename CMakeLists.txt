@@ -4,6 +4,10 @@ project (OpenSofa)
 set(TARGET_LIBRARY_NAME opensofa)
 set (CMAKE_CXX_STANDARD 11)
 
+# dependencies
+set(THREADS_PREFER_PTHREAD_FLAG ON)
+find_package(Threads REQUIRED)
+
 # source files
 include_directories(include)
 set(PROJECT_SRC
@@ -12,6 +16,7 @@ set(PROJECT_SRC
 
 # library
 add_library(${TARGET_LIBRARY_NAME} ${PROJECT_SRC})
+target_link_libraries(${TARGET_LIBRARY_NAME} Threads::Threads)
 
 # test programs
 #add_executable(TCPClientTest tcp_client_test.cpp)
