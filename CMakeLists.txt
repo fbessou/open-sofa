@@ -5,7 +5,7 @@ set(TARGET_LIBRARY_NAME opensofa)
 set (CMAKE_CXX_STANDARD 11)
 
 # source files
-include_directories("include/")
+include_directories(include)
 set(PROJECT_SRC
 	"src/client.cpp"
 	"src/tcpserver.cpp")
