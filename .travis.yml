@@ -1,0 +1,21 @@
+language: cpp
+compiler:
+  - gcc
+os: linux
+dist: trusty
+before_install:
+ - sudo apt-get -qq update
+ - sudo apt-get install -y libgtest-dev
+ - cd /usr/src/gtest/
+ - sudo cmake .
+ - sudo make
+ - sudo cp -a libgtest_main.a libgtest.a /usr/lib/
+ - cd "${TRAVIS_BUILD_DIR}"
+ - mkdir build
+ - cd build
+ - cmake ..
+ - make
+script: "make test"
+branches:
+ only:
+  - master
