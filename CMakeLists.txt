@@ -18,9 +18,6 @@ set(PROJECT_SRC
 add_library(${TARGET_LIBRARY_NAME} ${PROJECT_SRC})
 target_link_libraries(${TARGET_LIBRARY_NAME} Threads::Threads)
 
-# test programs
-#add_executable(TCPClientTest tcp_client_test.cpp)
-#target_link_libraries(TCPClientTest ${PROJECT_LIBRARY_NAME})
-
-#add_executable(TCPServerTest tcp_server_test.cpp)
-#target_link_libraries(TCPServerTest ${PROJECT_LIBRARY_NAME})
+# test
+enable_testing()
+add_subdirectory(test)
