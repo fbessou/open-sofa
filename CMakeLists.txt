@@ -1,7 +1,7 @@
 cmake_minimum_required (VERSION 2.6)
 
 project (OpenSofa)
-set(TARGET_LIBRARY_NAME ${PROJECT_NAME})
+set(TARGET_LIBRARY_NAME opensofa)
 set (CMAKE_CXX_STANDARD 11)
 
 # source files
