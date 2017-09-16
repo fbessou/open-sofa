@@ -10,7 +10,8 @@ namespace OpenSofa
   class IOThread
   {
     public:
-      SyncQueue<std::shared_ptr<T>> m_queue;
+      SyncQueue<std::shared_ptr<T>> m_in_queue;
+      SyncQueue<std::shared_ptr<T>> m_out_queue;
 
       IOThread();
       ~IOThread();
@@ -47,7 +48,7 @@ namespace OpenSofa
     while(m_in_running) {
       std::shared_ptr<T> data_ptr;
       if(read(data_ptr)) // READ ptr func?
-        m_queue.push(data_ptr);
+        m_in_queue.push(data_ptr);
     }
   }
 
@@ -55,7 +56,7 @@ namespace OpenSofa
   void IOThread<T>::runOut()
   {
     while(m_out_running) {
-      std::shared_ptr<T> data_ptr = m_queue.peek();
+      std::shared_ptr<T> data_ptr = m_out_queue.peek();
       send(data_ptr); // SEND ptr func?
     }
   }
