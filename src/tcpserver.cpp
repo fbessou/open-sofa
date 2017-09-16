@@ -40,6 +40,11 @@ namespace OpenSofa
     }
   }
 
+  void TCPServer::stop()
+  {
+    //
+  }
+
   void TCPServer::send(const void * buffer, std::size_t bufferSize, unsigned int dst)
   {
       ::send(dst, buffer, bufferSize, 0);

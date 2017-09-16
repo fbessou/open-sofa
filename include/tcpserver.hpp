@@ -11,6 +11,7 @@ namespace OpenSofa
     public:
       TCPServer(unsigned short port = 9876);
       void start();
+      void stop();
       void send(const void * buffer, std::size_t bufferSize, unsigned int dst);
       void setConnectionListener(ConnectionListener* listener);
     private:
