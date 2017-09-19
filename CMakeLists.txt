@@ -12,7 +12,7 @@ find_package(Threads REQUIRED)
 include_directories(include)
 set(PROJECT_SRC
 	"src/client.cpp"
-	"src/tcpserver.cpp"
+  "src/TCPServer.cpp"
   "src/SyncQueue.cpp")
 
 # library

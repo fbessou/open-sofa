@@ -37,7 +37,9 @@ T SyncQueue<T>::peek()
   if (m_queue.empty())
     m_cond.wait(lock);
 
-  return m_queue.pop();
+  T t = m_queue.front();
+  m_queue.pop();
+  return t;
 }
 
 template <typename T>
@@ -49,7 +51,8 @@ bool SyncQueue<T>::peek(T& out, unsigned long timeOutMillis)
     if (m_cond.wait_for(lock, std::chrono::milliseconds(timeOutMillis)) == std::cv_status::timeout)
       return false;
 
-  out = m_queue.pop();
+  out = m_queue.front();
+  m_queue.pop();
   return true;
 }
 

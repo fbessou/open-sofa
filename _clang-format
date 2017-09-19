@@ -9,6 +9,7 @@ UseTab: Never
 TabWidth: 2
 Standard: Cpp11
 AlwaysBreakTemplateDeclarations: true
+AccessModifierOffset: -2
 
 #IndentCaseLabels: true
 #AlignConsecutiveAssignments: true

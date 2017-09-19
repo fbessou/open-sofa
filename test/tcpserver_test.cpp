@@ -1,5 +1,5 @@
 #include <gtest/gtest.h>
-#include "tcpserver.hpp"
+#include "TCPServer.hpp"
 
 using namespace OpenSofa;
 
