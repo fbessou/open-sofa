@@ -43,20 +43,22 @@ void TCPServer::stop() { stopAccept(); }
 
 void TCPServer::send(const RawBuffer& buffer, unsigned int dst)
 {
-  if(connections_.count(dst))
+  if (connections_.count(dst))
     connections_[dst]->send(buffer);
 }
 
 bool TCPServer::recv(RawBuffer& buffer, unsigned int dst, unsigned int timeOutMS)
 {
-  if(connections_.count(dst))
-    connections_[dst]->recv(buffer); // TODO blocking and time out
+  if (connections_.count(dst))
+    return connections_[dst]->recv(buffer, timeOutMS);
+  return false;
 }
 
 bool TCPServer::recv(RawBuffer& buffer, unsigned int dst)
 {
-  if(connections_.count(dst))
-    connections_[dst]->recv(buffer); // TODO non blocking 
+  if (connections_.count(dst))
+    return connections_[dst]->recv(buffer);
+  return false;
 }
 
 void TCPServer::setConnectionListener(const std::shared_ptr<ConnectionListener>& listener)
@@ -91,24 +93,20 @@ void TCPServer::accept(unsigned short hAccept)
 {
   // see std::bind
   connections_[hAccept] = TCPConnectionPtr(new TCPConnection(
-        [hAccept](const RawBuffer& buffer) {
-          ::send(hAccept, buffer.getData(), buffer.length, 0);
-        },
-        [hAccept](RawBuffer& buffer) -> bool {
-          size_t maxBufferLength = 1024;
-          std::shared_ptr<void> data = std::shared_ptr<void>(new char[RawBuffer::MaxLength]);
-          // FIXME BUFFER MAX LENGTH
-          ssize_t rs = ::recv(hAccept, data.get(), RawBuffer::MaxLength, 0);
-          if(rs > 0) {
-            buffer.data = data;
-            buffer.length = rs;
-            return true;
-          }
-          else {
-            return false;
-          }
-        }));
+      [hAccept](const RawBuffer& buffer) { ::send(hAccept, buffer.getData(), buffer.length, 0); },
+      [hAccept](RawBuffer& buffer) -> bool {
+        size_t maxBufferLength = 1024;
+        std::shared_ptr<void> data = std::shared_ptr<void>(new char[RawBuffer::MaxLength]);
+        // FIXME BUFFER MAX LENGTH
+        ssize_t rs = ::recv(hAccept, data.get(), RawBuffer::MaxLength, 0);
+        if (rs > 0) {
+          buffer.data = data;
+          buffer.length = rs;
+          return true;
+        } else {
+          return false;
+        }
+      }));
   connectionListener_->onConnected(hAccept);
 }
-
 }

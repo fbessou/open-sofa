@@ -9,13 +9,20 @@ namespace OpenSofa {
 
 template <typename T>
 class SyncQueue {
-  public:
+public:
+  //! Add item at end
   void push(const T& v);
-  T peek();
+
+  //! Retrieve an item from the queue if any
+  bool peek(T& out);
+
+  //! Retrieve an item from the queue (wait for it)
   bool peek(T& out, unsigned long timeOutMillis);
+
+  //! Empty the queue
   void clear();
 
-  private:
+private:
   std::queue<T> m_queue;
   std::mutex m_mutex;
   std::condition_variable m_cond;
@@ -30,16 +37,16 @@ void SyncQueue<T>::push(const T& v)
 }
 
 template <typename T>
-T SyncQueue<T>::peek()
+bool SyncQueue<T>::peek(T& out)
 {
   std::unique_lock<std::mutex> lock(m_mutex);
-  
-  if (m_queue.empty())
-    m_cond.wait(lock);
 
-  T t = m_queue.front();
+  if (m_queue.empty())
+    return false;
+
+  out = m_queue.front();
   m_queue.pop();
-  return t;
+  return true;
 }
 
 template <typename T>
@@ -63,5 +70,4 @@ void SyncQueue<T>::clear()
 
   m_queue.clear();
 }
-
 }

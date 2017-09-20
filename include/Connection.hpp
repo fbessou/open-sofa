@@ -16,7 +16,11 @@ public:
   ~Connection();
 
   void send(const T& buffer);
-  void recv(T& buffer);
+
+  //! Read a pending buffer if any
+  bool recv(T& buffer);
+  //! Read a buffer if any, or wait for it
+  bool recv(T& buffer, unsigned long timeOutMillis);
 
 private:
   void runSend();
@@ -59,17 +63,24 @@ void Connection<T>::send(const T& buffer)
 }
 
 template <typename T>
-void Connection<T>::recv(T& buffer)
+bool Connection<T>::recv(T& buffer)
 {
-  buffer = recvQueue_.peek();
+  return recvQueue_.peek(buffer);
+}
+
+template <typename T>
+bool Connection<T>::recv(T& buffer, unsigned long timeOutMillis)
+{
+  return recvQueue_.peek(buffer, timeOutMillis);
 }
 
 template <typename T>
 void Connection<T>::runSend()
 {
+  T buffer;
   while (sendThreadRunning_) {
-    T buffer = sendQueue_.peek();
-    send_(buffer);
+    if (sendQueue_.peek(buffer, 10))
+      send_(buffer);
   }
 }
 
