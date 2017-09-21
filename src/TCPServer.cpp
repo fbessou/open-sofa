@@ -95,9 +95,7 @@ void TCPServer::accept(unsigned short hAccept)
   connections_[hAccept] = TCPConnectionPtr(new TCPConnection(
       [hAccept](const RawBuffer& buffer) { ::send(hAccept, buffer.getData(), buffer.length, 0); },
       [hAccept](RawBuffer& buffer) -> bool {
-        size_t maxBufferLength = 1024;
         std::shared_ptr<void> data = std::shared_ptr<void>(new char[RawBuffer::MaxLength]);
-        // FIXME BUFFER MAX LENGTH
         ssize_t rs = ::recv(hAccept, data.get(), RawBuffer::MaxLength, 0);
         if (rs > 0) {
           buffer.data = data;

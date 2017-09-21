@@ -28,22 +28,22 @@ private:
 
   bool sendThreadRunning_;
   bool recvThreadRunning_;
-  std::thread sendThread_;
-  std::thread recvThread_;
-  SyncQueue<T> sendQueue_;
-  SyncQueue<T> recvQueue_;
   SendFunc send_;
   RecvFunc recv_;
+  SyncQueue<T> sendQueue_;
+  SyncQueue<T> recvQueue_;
+  std::thread sendThread_;
+  std::thread recvThread_;
 };
 
 template <typename T>
 Connection<T>::Connection(const SendFunc& sendFunc, const RecvFunc& recvFunc)
     : sendThreadRunning_(true)
     , recvThreadRunning_(true)
-    , sendThread_(&Connection<T>::runSend, this)
-    , recvThread_(&Connection<T>::runRecv, this)
     , send_(sendFunc)
     , recv_(recvFunc)
+    , sendThread_(&Connection<T>::runSend, this)
+    , recvThread_(&Connection<T>::runRecv, this)
 {
 }
 
