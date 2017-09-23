@@ -10,6 +10,7 @@ TabWidth: 2
 Standard: Cpp11
 AlwaysBreakTemplateDeclarations: true
 AccessModifierOffset: -2
+AllowShortFunctionsOnASingleLine: None
 
 #IndentCaseLabels: true
 #AlignConsecutiveAssignments: true
@@ -20,7 +21,6 @@ AccessModifierOffset: -2
 #SpaceAfterCStyleCast: true
 #SpaceBeforeParens: Never
 #SpaceInEmptyParentheses: false
-#AllowShortFunctionsOnASingleLine: Inline
 #BreakBeforeTernaryOperators: false
 #BreakConstructorInitializersBeforeComma: false
 #ConstructorInitializerAllOnOneLineOrOnePerLine: true
