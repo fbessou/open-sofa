@@ -1,17 +1,17 @@
 #pragma once
 
+#include <map>
 #include <memory>
 #include <thread>
 #include <vector>
-#include <map>
 
-#include "Server.hpp"
 #include "Connection.hpp"
+#include "Server.hpp"
 
 namespace OpenSofa {
 
 class TCPServer : public Server {
-  public:
+public:
   typedef Connection<RawBuffer> TCPConnection;
   typedef std::unique_ptr<TCPConnection> TCPConnectionPtr;
 
@@ -23,17 +23,19 @@ class TCPServer : public Server {
   bool recv(RawBuffer& buffer, unsigned int dst);
   void setConnectionListener(const std::shared_ptr<ConnectionListener>& listener);
 
-  private:
+private:
   void startAccept();
   void stopAccept();
   void runAccept();
-  void accept(unsigned short hAccept);
+  void accept(unsigned int hAccept);
+  void sendNetwork(const RawBuffer& buffer, unsigned int dst);
+  bool recvNetwork(RawBuffer& buffer, unsigned int dst);
 
   unsigned short port;
   int listenSocket;
   std::shared_ptr<ConnectionListener> connectionListener_;
   std::unique_ptr<std::thread> acceptThread_;
   bool acceptThreadRunning_;
-  std::map<unsigned short, TCPConnectionPtr> connections_;
+  std::map<unsigned int, TCPConnectionPtr> connections_;
 };
 }

@@ -1,14 +1,13 @@
 #include "TCPServer.hpp"
-#define SOCKET int
-#define SOCKET_ERRNO errno
-#define ERRNO errno
-#define closesocket close
+#include <cstring>
 #include <errno.h>
 #include <fcntl.h>
 #include <iostream>
 #include <netinet/ip.h>
 #include <sys/socket.h>
 #include <sys/types.h>
+#include <unistd.h>
+#include <functional>
 
 namespace OpenSofa {
 
@@ -27,19 +26,22 @@ void TCPServer::start()
   addr.sin_port = htons((unsigned short)port);
   listenSocket = socket(PF_INET, SOCK_STREAM, 0);
   if (bind(listenSocket, (struct sockaddr*)&addr, sizeof(addr)) == -1) {
-    printf("bind() error %d\n", SOCKET_ERRNO);
+    printf("bind() error: (%d) %s\n", errno, strerror(errno));
   }
   if (listenSocket == -1) {
-    printf("socket() error %d\n", SOCKET_ERRNO);
+    printf("socket() error: (%d) %s\n", errno, strerror(errno));
   }
   if (listen(listenSocket, 100) == -1) {
-    printf("listen() error %d\n", SOCKET_ERRNO);
-    exit(1);
+    printf("listen() error: (%d) %s\n", errno, strerror(errno));
   }
   startAccept();
 }
 
-void TCPServer::stop() { stopAccept(); }
+void TCPServer::stop()
+{
+  stopAccept();
+  close(listenSocket);
+}
 
 void TCPServer::send(const RawBuffer& buffer, unsigned int dst)
 {
@@ -76,8 +78,8 @@ void TCPServer::runAccept()
 {
   while (acceptThreadRunning_) {
     // select(...) # <sys/select.h>
-    unsigned short hAccept = ::accept(listenSocket, nullptr, nullptr);
-    if (hAccept != (unsigned short)0xffff)
+    int hAccept = ::accept(listenSocket, nullptr, nullptr);
+    if (hAccept != -1)
       accept(hAccept);
   }
 }
@@ -89,22 +91,33 @@ void TCPServer::stopAccept()
   acceptThread_.reset(nullptr);
 }
 
-void TCPServer::accept(unsigned short hAccept)
+void TCPServer::accept(unsigned int hAccept)
 {
   // see std::bind
   connections_[hAccept] = TCPConnectionPtr(new TCPConnection(
-      [hAccept](const RawBuffer& buffer) { ::send(hAccept, buffer.getData(), buffer.length, 0); },
-      [hAccept](RawBuffer& buffer) -> bool {
-        std::shared_ptr<void> data = std::shared_ptr<void>(new char[RawBuffer::MaxLength]);
-        ssize_t rs = ::recv(hAccept, data.get(), RawBuffer::MaxLength, 0);
-        if (rs > 0) {
-          buffer.data = data;
-          buffer.length = rs;
-          return true;
-        } else {
-          return false;
-        }
-      }));
+        std::bind(&TCPServer::sendNetwork, this, std::placeholders::_1, hAccept),
+        std::bind(&TCPServer::recvNetwork, this, std::placeholders::_1, hAccept)));
+
   connectionListener_->onConnected(hAccept);
 }
+
+void TCPServer::sendNetwork(const RawBuffer& buffer, unsigned int dst)
+{
+  ::send(dst, buffer.getData(), buffer.length, 0);
+}
+
+bool TCPServer::recvNetwork(RawBuffer& buffer, unsigned int dst)
+{
+  std::shared_ptr<void> data = std::shared_ptr<void>(new char[RawBuffer::MaxLength]);
+  ssize_t rs = ::recv(dst, data.get(), RawBuffer::MaxLength, 0);
+  
+  if (rs > 0) {
+    buffer.data = data;
+    buffer.length = rs;
+    return true;
+  }
+
+  return false;
+}
+
 }
