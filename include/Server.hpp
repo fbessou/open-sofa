@@ -1,7 +1,5 @@
 #pragma once
 
-#include "RawBuffer.hpp"
-#include <chrono>
 #include <memory>
 
 namespace OpenSofa {
@@ -20,16 +18,9 @@ public:
   //! Stop server and associated components
   virtual void stop() = 0;
 
-  //! Send a message to the given destination
-  virtual void send(const RawBuffer& buffer, unsigned int dst) = 0;
-
-  //! Wait for a message from dst with timeout in milliseconds
-  virtual bool recv(RawBuffer& buffer, unsigned int dst, unsigned int timeOutMS) = 0;
-
-  //! Give a pending message from dst if any, immediately return otherwise
-  virtual bool recv(RawBuffer& buffer, unsigned int dst) = 0;
-
   //! Set a listener for new connections
   virtual void setConnectionListener(const std::shared_ptr<ConnectionListener>& listener) = 0;
+
+  virtual const std::map<unsigned int, Connection::Ptr>& getConnections() const = 0;
 };
 }

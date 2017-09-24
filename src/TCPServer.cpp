@@ -1,13 +1,14 @@
 #include "TCPServer.hpp"
+#include "NetworkConnection.hpp"
 #include <cstring>
 #include <errno.h>
 #include <fcntl.h>
+#include <functional>
 #include <iostream>
 #include <netinet/ip.h>
 #include <sys/socket.h>
 #include <sys/types.h>
 #include <unistd.h>
-#include <functional>
 
 namespace OpenSofa {
 
@@ -43,29 +44,14 @@ void TCPServer::stop()
   close(listenSocket);
 }
 
-void TCPServer::send(const RawBuffer& buffer, unsigned int dst)
-{
-  if (connections_.count(dst))
-    connections_[dst]->send(buffer);
-}
-
-bool TCPServer::recv(RawBuffer& buffer, unsigned int dst, unsigned int timeOutMS)
-{
-  if (connections_.count(dst))
-    return connections_[dst]->recv(buffer, timeOutMS);
-  return false;
-}
-
-bool TCPServer::recv(RawBuffer& buffer, unsigned int dst)
-{
-  if (connections_.count(dst))
-    return connections_[dst]->recv(buffer);
-  return false;
-}
-
 void TCPServer::setConnectionListener(const std::shared_ptr<ConnectionListener>& listener)
 {
   connectionListener_ = listener;
+}
+
+const std::map<unsigned int, Connection::Ptr>& TCPServer::getConnections() const
+{
+  return connections_;
 }
 
 void TCPServer::startAccept()
@@ -93,31 +79,24 @@ void TCPServer::stopAccept()
 
 void TCPServer::accept(unsigned int hAccept)
 {
-  // see std::bind
-  connections_[hAccept] = TCPConnectionPtr(new TCPConnection(
-        std::bind(&TCPServer::sendNetwork, this, std::placeholders::_1, hAccept),
-        std::bind(&TCPServer::recvNetwork, this, std::placeholders::_1, hAccept)));
+  using namespace std::placeholders;
+
+  auto sendFunc = std::bind(&TCPServer::sendNetwork, this, _1, _2, hAccept);
+  auto recvFunc = std::bind(&TCPServer::recvNetwork, this, _1, _2, hAccept);
+  connections_[hAccept].reset(new NetworkConnection(sendFunc, recvFunc));
 
   connectionListener_->onConnected(hAccept);
 }
 
-void TCPServer::sendNetwork(const RawBuffer& buffer, unsigned int dst)
+void TCPServer::sendNetwork(const uint8_t* buf, size_t count, unsigned int dst)
 {
-  ::send(dst, buffer.getData(), buffer.length, 0);
+  ::send(dst, buf, count, 0);
 }
 
-bool TCPServer::recvNetwork(RawBuffer& buffer, unsigned int dst)
+size_t TCPServer::recvNetwork(uint8_t* buf, size_t count, unsigned int dst)
 {
-  std::shared_ptr<void> data = std::shared_ptr<void>(new char[RawBuffer::MaxLength]);
-  ssize_t rs = ::recv(dst, data.get(), RawBuffer::MaxLength, 0);
-  
-  if (rs > 0) {
-    buffer.data = data;
-    buffer.length = rs;
-    return true;
-  }
-
-  return false;
+  ssize_t rs = ::recv(dst, buf, count, 0);
+  // FIXME Handle error where rs < 0
+  return rs;
 }
-
 }
