@@ -10,32 +10,38 @@ namespace OpenSofa {
 
 class NetworkConnection : public Connection {
 public:
-  class ByteInputStream : public OpenSofa::ByteInputStream {
-    public:
-      size_t read(uint8_t* buf, std::size_t count);
-      void close() { }
-  };
-  class ByteOutputStream : public OpenSofa::ByteOutputStream {
-    public:
-      size_t write(const uint8_t* buf, std::size_t count);
-      void close() { }
-  };
   typedef std::shared_ptr<NetworkConnection> Ptr;
 
-  typedef std::function<void(const uint8_t* buf, std::size_t count)> SendFunc;
+  typedef std::function<size_t(const uint8_t* buf, std::size_t count)> SendFunc;
   typedef std::function<size_t(uint8_t* buf, std::size_t count)> RecvFunc;
 
-  NetworkConnection(const SendFunc& sendFunc, const RecvFunc& recvFunc);
+private:
+  class NetworkByteInputStream : public ByteInputStream {
+    public:
+      NetworkByteInputStream(RecvFunc recv);
+      size_t read(uint8_t* buf, std::size_t count);
+      void close() { }
+    private:
+      RecvFunc recv_;
+  };
+  class NetworkByteOutputStream : public ByteOutputStream {
+    public:
+      NetworkByteOutputStream(SendFunc send);
+      size_t write(const uint8_t* buf, std::size_t count);
+      void close() { }
+    private:
+      SendFunc send_;
+  };
 
-  OpenSofa::ByteInputStream& getInputStream();
-  OpenSofa::ByteOutputStream& getOutputStream();
+public:
+  NetworkConnection(SendFunc sendFunc, RecvFunc recvFunc);
+
+  ByteInputStream& getInputStream();
+  ByteOutputStream& getOutputStream();
 
 private:
-  SendFunc send_;
-  RecvFunc recv_;
-  ByteInputStream inputStream_;
-  ByteOutputStream outputStream_;
+  NetworkByteInputStream inputStream_;
+  NetworkByteOutputStream outputStream_;
 };
-
 
 }

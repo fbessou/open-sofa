@@ -21,6 +21,6 @@ public:
   //! Set a listener for new connections
   virtual void setConnectionListener(const std::shared_ptr<ConnectionListener>& listener) = 0;
 
-  virtual const std::map<unsigned int, Connection::Ptr>& getConnections() const = 0;
+  virtual std::map<unsigned int, Connection::Ptr> getConnections() const = 0;
 };
 }

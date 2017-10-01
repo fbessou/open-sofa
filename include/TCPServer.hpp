@@ -16,15 +16,15 @@ public:
   void start();
   void stop();
   void setConnectionListener(const std::shared_ptr<ConnectionListener>& listener);
-  const std::map<unsigned int, Connection::Ptr>& getConnections() const;
+  std::map<unsigned int, Connection::Ptr> getConnections() const;
 
 private:
   void startAccept();
   void stopAccept();
   void runAccept();
   void accept(unsigned int hAccept);
-  void sendNetwork(const uint8_t* buf, size_t count, unsigned int dst);
-  size_t recvNetwork(uint8_t* buf, size_t count, unsigned int dst);
+  std::size_t sendNetwork(const uint8_t* buf, std::size_t count, unsigned int dst);
+  std::size_t recvNetwork(uint8_t* buf, std::size_t count, unsigned int dst);
 
   unsigned short port;
   int listenSocket;

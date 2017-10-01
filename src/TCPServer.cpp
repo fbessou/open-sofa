@@ -49,7 +49,7 @@ void TCPServer::setConnectionListener(const std::shared_ptr<ConnectionListener>&
   connectionListener_ = listener;
 }
 
-const std::map<unsigned int, Connection::Ptr>& TCPServer::getConnections() const
+std::map<unsigned int, Connection::Ptr> TCPServer::getConnections() const
 {
   return connections_;
 }
@@ -88,12 +88,12 @@ void TCPServer::accept(unsigned int hAccept)
   connectionListener_->onConnected(hAccept);
 }
 
-void TCPServer::sendNetwork(const uint8_t* buf, size_t count, unsigned int dst)
+std::size_t TCPServer::sendNetwork(const uint8_t* buf, std::size_t count, unsigned int dst)
 {
   ::send(dst, buf, count, 0);
 }
 
-size_t TCPServer::recvNetwork(uint8_t* buf, size_t count, unsigned int dst)
+size_t TCPServer::recvNetwork(uint8_t* buf, std::size_t count, unsigned int dst)
 {
   ssize_t rs = ::recv(dst, buf, count, 0);
   // FIXME Handle error where rs < 0

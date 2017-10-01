@@ -2,31 +2,36 @@
 
 namespace OpenSofa {
 
-NetworkConnection::NetworkConnection(const SendFunc& sendFunc, const RecvFunc& recvFunc)
-    : send_(sendFunc)
-    , recv_(recvFunc)
+NetworkConnection::NetworkByteInputStream::NetworkByteInputStream(RecvFunc recv) : recv_(recv)
+{}
+
+NetworkConnection::NetworkByteOutputStream::NetworkByteOutputStream(SendFunc send) : send_(send)
+{}
+
+size_t NetworkConnection::NetworkByteInputStream::read(uint8_t* buf, std::size_t count)
+{
+  return recv_(buf, count);
+}
+
+size_t NetworkConnection::NetworkByteOutputStream::write(const uint8_t* buf, std::size_t count)
+{
+  return send_(buf, count);
+}
+
+NetworkConnection::NetworkConnection(SendFunc sendFunc, RecvFunc recvFunc)
+    : inputStream_(recvFunc)
+    , outputStream_(sendFunc)
 {
 }
 
-OpenSofa::ByteInputStream& NetworkConnection::getInputStream()
+ByteInputStream& NetworkConnection::getInputStream()
 {
   return inputStream_;
 }
 
-OpenSofa::ByteOutputStream& NetworkConnection::getOutputStream()
+ByteOutputStream& NetworkConnection::getOutputStream()
 {
   return outputStream_;
-}
-
-size_t NetworkConnection::ByteInputStream::read(uint8_t* buf, std::size_t count)
-{
-  return count; //recv_(buf, count);
-}
-
-size_t NetworkConnection::ByteOutputStream::write(const uint8_t* buf, std::size_t count)
-{
-  //send_(buf, count);
-  return count; // TODO send_ -> size_t (const uint8_t*, size_t)
 }
 
 }
