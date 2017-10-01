@@ -1,4 +1,5 @@
 #include "TCPServer.hpp"
+#include "BufferedConnection.hpp"
 #include <cstring>
 #include <iostream>
 #include <memory>
@@ -13,12 +14,14 @@ public:
       : clientConnected(false)
       , clientId(0)
       , server(server)
+      , cnx(nullptr)
   {
   }
   void onConnected(unsigned int id)
   {
     cout << "Client has joined!" << endl;
     clientId = id;
+    cnx = new BufferedConnection(*server->getConnections()[clientId]);
     clientConnected = true;
   }
   void onDisconnected(unsigned int id)
@@ -28,13 +31,10 @@ public:
       clientConnected = false;
   }
 
-  shared_ptr<Connection>& getConnection() {
-    return server->getConnections()[clientId];
-  }
-
   bool clientConnected;
   unsigned int clientId;
   Server* server;
+  Connection* cnx;
 };
 
 std::unique_ptr<Server> srv;
@@ -58,14 +58,14 @@ int main(int argc, char** argv)
   uint8_t buf[1024];
   while (getline(std::cin, line)) {
     if (line.size() && cc->clientConnected) {
-      auto cnx = cc->getConnection();
-      cnx->getOutputStream().write((const uint8_t*)line.c_str(), line.size()+1);
+      auto cnx = cc->cnx;
+      cnx->getOutputStream().write((const uint8_t*)line.c_str(), line.size() + 1);
     }
     if (cc->clientConnected) {
-	auto cnx = cc->getConnection();
-	int size = cnx->getInputStream().read(buf, 1024-1);
-        buf[size] = 0;
-        cout << "\e[33m\"" << (char*)buf << "\"\e[0m" << endl;
+      auto cnx = cc->cnx;
+      int size = cnx->getInputStream().read(buf, 1024 - 1);
+      buf[size] = 0;
+      cout << "\e[33m\"" << (char*)buf << "\"\e[0m" << endl;
     }
   }
 

@@ -13,13 +13,13 @@ struct RawBuffer {
   }
   RawBuffer(std::uint32_t l)
       : length(l)
-      , data(new char[l])
+      , data(new uint8_t[l])
   {
   }
 
-  const void* getData() const { return data.get(); }
-  void* getData() { return data.get(); }
+  const uint8_t* getData() const { return data.get(); }
+  uint8_t* getData() { return data.get(); }
 
   std::uint32_t length;
-  std::shared_ptr<void> data;
+  std::shared_ptr<uint8_t> data;
 };

@@ -22,52 +22,62 @@ public:
   //! Empty the queue
   void clear();
 
+  //! Indicate whether it is empty
+  bool empty();
+
 private:
-  std::queue<T> m_queue;
-  std::mutex m_mutex;
-  std::condition_variable m_cond;
+  std::queue<T> queue_;
+  std::mutex mutex_;
+  std::condition_variable cond_;
 };
 
 template <typename T>
 void SyncQueue<T>::push(const T& v)
 {
-  std::unique_lock<std::mutex> lock(m_mutex);
-  m_queue.push(v);
-  m_cond.notify_one();
+  std::unique_lock<std::mutex> lock(mutex_);
+  queue_.push(v);
+  cond_.notify_one();
 }
 
 template <typename T>
 bool SyncQueue<T>::peek(T& out)
 {
-  std::unique_lock<std::mutex> lock(m_mutex);
+  std::unique_lock<std::mutex> lock(mutex_);
 
-  if (m_queue.empty())
+  if (queue_.empty())
     return false;
 
-  out = m_queue.front();
-  m_queue.pop();
+  out = queue_.front();
+  queue_.pop();
   return true;
 }
 
 template <typename T>
 bool SyncQueue<T>::peek(T& out, unsigned long timeOutMillis)
 {
-  std::unique_lock<std::mutex> lock(m_mutex);
+  std::unique_lock<std::mutex> lock(mutex_);
 
-  if (m_queue.empty())
-    if (m_cond.wait_for(lock, std::chrono::milliseconds(timeOutMillis)) == std::cv_status::timeout)
+  if (queue_.empty())
+    if (cond_.wait_for(lock, std::chrono::milliseconds(timeOutMillis)) == std::cv_status::timeout)
       return false;
 
-  out = m_queue.front();
-  m_queue.pop();
+  out = queue_.front();
+  queue_.pop();
   return true;
 }
 
 template <typename T>
 void SyncQueue<T>::clear()
 {
-  std::unique_lock<std::mutex> lock(m_mutex);
+  std::unique_lock<std::mutex> lock(mutex_);
 
-  m_queue.clear();
+  queue_.clear();
+}
+
+template <typename T>
+bool SyncQueue<T>::empty()
+{
+  std::unique_lock<std::mutex> lock(mutex_);
+  return queue_.empty();
 }
 }

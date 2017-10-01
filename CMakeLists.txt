@@ -13,7 +13,8 @@ include_directories(include)
 set(PROJECT_SRC
   "src/TCPServer.cpp"
   "src/SyncQueue.cpp"
-  "src/NetworkConnection.cpp")
+  "src/NetworkConnection.cpp"
+  "src/BufferedConnection.cpp")
 
 # library
 add_library(${TARGET_LIBRARY_NAME} ${PROJECT_SRC})
