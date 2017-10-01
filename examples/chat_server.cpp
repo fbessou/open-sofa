@@ -9,9 +9,10 @@ using namespace OpenSofa;
 
 class CallbackConnection : public Server::ConnectionListener {
 public:
-  CallbackConnection()
+  CallbackConnection(Server* server)
       : clientConnected(false)
       , clientId(0)
+      , server(server)
   {
   }
   void onConnected(unsigned int id)
@@ -26,12 +27,18 @@ public:
     if (id == clientId)
       clientConnected = false;
   }
+
+  shared_ptr<Connection>& getConnection() {
+    return server->getConnections()[clientId];
+  }
+
   bool clientConnected;
   unsigned int clientId;
+  Server* server;
 };
 
 std::unique_ptr<Server> srv;
-std::shared_ptr<CallbackConnection> cc(new CallbackConnection);
+std::shared_ptr<CallbackConnection> cc;
 
 void initServer()
 {
@@ -40,6 +47,7 @@ void initServer()
   cin >> port;
   srv.reset(new TCPServer{ port });
   srv->start();
+  cc.reset(new CallbackConnection(srv.get()));
   srv->setConnectionListener(cc);
 }
 
@@ -47,19 +55,17 @@ int main(int argc, char** argv)
 {
   initServer();
   string line;
+  uint8_t buf[1024];
   while (getline(std::cin, line)) {
     if (line.size() && cc->clientConnected) {
-      RawBuffer buf(line.size() + 1);
-      strcpy((char*)buf.getData(), line.c_str());
-      ((char*)buf.getData())[line.size()] = '\0';
-      srv->send(buf, cc->clientId);
+      auto cnx = cc->getConnection();
+      cnx->getOutputStream().write((const uint8_t*)line.c_str(), line.size()+1);
     }
     if (cc->clientConnected) {
-      RawBuffer buf;
-      if (srv->recv(buf, cc->clientId)) {
-        const char* s = (const char*)buf.getData();
-        cout << "\e[33m\"" << s << "\"\e[0m" << endl;
-      }
+	auto cnx = cc->getConnection();
+	int size = cnx->getInputStream().read(buf, 1024-1);
+        buf[size] = 0;
+        cout << "\e[33m\"" << (char*)buf << "\"\e[0m" << endl;
     }
   }
 
