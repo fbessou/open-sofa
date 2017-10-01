@@ -93,7 +93,7 @@ std::size_t TCPServer::sendNetwork(const uint8_t* buf, std::size_t count, unsign
   ::send(dst, buf, count, 0);
 }
 
-size_t TCPServer::recvNetwork(uint8_t* buf, std::size_t count, unsigned int dst)
+std::size_t TCPServer::recvNetwork(uint8_t* buf, std::size_t count, unsigned int dst)
 {
   ssize_t rs = ::recv(dst, buf, count, 0);
   // FIXME Handle error where rs < 0
