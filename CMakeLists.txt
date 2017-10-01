@@ -11,7 +11,6 @@ find_package(Threads REQUIRED)
 # source files
 include_directories(include)
 set(PROJECT_SRC
-	"src/client.cpp"
   "src/TCPServer.cpp"
   "src/SyncQueue.cpp"
   "src/NetworkConnection.cpp")
