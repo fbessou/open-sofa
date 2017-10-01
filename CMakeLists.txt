@@ -12,6 +12,7 @@ find_package(Threads REQUIRED)
 include_directories(include)
 set(PROJECT_SRC
   "src/TCPServer.cpp"
+  "src/TCPClient.cpp"
   "src/SyncQueue.cpp"
   "src/NetworkConnection.cpp"
   "src/BufferedConnection.cpp")
