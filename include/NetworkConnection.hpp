@@ -1,10 +1,10 @@
 #pragma once
 
 #include "Connection.hpp"
-#include <functional>
-#include <memory>
 #include <cstddef>
 #include <cstdint>
+#include <functional>
+#include <memory>
 
 namespace OpenSofa {
 
@@ -17,20 +17,26 @@ public:
 
 private:
   class NetworkByteInputStream : public ByteInputStream {
-    public:
-      NetworkByteInputStream(RecvFunc recv);
-      size_t read(uint8_t* buf, std::size_t count);
-      void close() { }
-    private:
-      RecvFunc recv_;
+  public:
+    NetworkByteInputStream(RecvFunc recv);
+    size_t read(uint8_t* buf, std::size_t count);
+    void close()
+    {
+    }
+
+  private:
+    RecvFunc recv_;
   };
   class NetworkByteOutputStream : public ByteOutputStream {
-    public:
-      NetworkByteOutputStream(SendFunc send);
-      size_t write(const uint8_t* buf, std::size_t count);
-      void close() { }
-    private:
-      SendFunc send_;
+  public:
+    NetworkByteOutputStream(SendFunc send);
+    size_t write(const uint8_t* buf, std::size_t count);
+    void close()
+    {
+    }
+
+  private:
+    SendFunc send_;
   };
 
 public:
@@ -43,5 +49,4 @@ private:
   NetworkByteInputStream inputStream_;
   NetworkByteOutputStream outputStream_;
 };
-
 }

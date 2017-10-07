@@ -12,6 +12,4 @@ public:
   virtual ByteInputStream& getInputStream() = 0;
   virtual ByteOutputStream& getOutputStream() = 0;
 };
-
 }
-

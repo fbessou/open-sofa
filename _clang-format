@@ -11,6 +11,7 @@ Standard: Cpp11
 AlwaysBreakTemplateDeclarations: true
 AccessModifierOffset: -2
 AllowShortFunctionsOnASingleLine: None
+BreakConstructorInitializersBeforeComma: false
 
 #IndentCaseLabels: true
 #AlignConsecutiveAssignments: true
@@ -22,6 +23,5 @@ AllowShortFunctionsOnASingleLine: None
 #SpaceBeforeParens: Never
 #SpaceInEmptyParentheses: false
 #BreakBeforeTernaryOperators: false
-#BreakConstructorInitializersBeforeComma: false
 #ConstructorInitializerAllOnOneLineOrOnePerLine: true
 

@@ -1,13 +1,12 @@
-#include <gtest/gtest.h>
 #include "TCPServer.hpp"
+#include <gtest/gtest.h>
 
 using namespace OpenSofa;
 
-namespace
+namespace {
+TEST(TCPServerTest, CanBeCreated)
 {
-  TEST(TCPServerTest, CanBeCreated)
-  {
-    Server * server = new TCPServer();
-    delete server;
-  }
+  Server* server = new TCPServer();
+  delete server;
+}
 }

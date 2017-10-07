@@ -5,7 +5,8 @@
 using namespace OpenSofa;
 
 std::unique_ptr<Client> client;
-int main() {
+int main()
+{
   uint8_t buf[1024];
   std::string line;
 
@@ -18,8 +19,8 @@ int main() {
   client.reset(new TCPClient("localhost", port));
   auto cnx = client->connect();
   while (getline(std::cin, line)) {
-    cnx->getOutputStream().write((const uint8_t*)line.c_str(), line.size()+1);
-    int size = cnx->getInputStream().read(buf, 1024-1);
+    cnx->getOutputStream().write((const uint8_t*)line.c_str(), line.size() + 1);
+    int size = cnx->getInputStream().read(buf, 1024 - 1);
     buf[size] = 0;
     std::cout << "\e[33m\"" << (char*)buf << "\"\e[0m" << std::endl;
   }

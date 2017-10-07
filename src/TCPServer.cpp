@@ -12,8 +12,7 @@
 
 namespace OpenSofa {
 
-TCPServer::TCPServer(unsigned short port)
-    : port(port)
+TCPServer::TCPServer(unsigned short port) : port(port)
 {
 }
 

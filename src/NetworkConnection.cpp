@@ -3,10 +3,12 @@
 namespace OpenSofa {
 
 NetworkConnection::NetworkByteInputStream::NetworkByteInputStream(RecvFunc recv) : recv_(recv)
-{}
+{
+}
 
 NetworkConnection::NetworkByteOutputStream::NetworkByteOutputStream(SendFunc send) : send_(send)
-{}
+{
+}
 
 size_t NetworkConnection::NetworkByteInputStream::read(uint8_t* buf, std::size_t count)
 {
@@ -19,8 +21,7 @@ size_t NetworkConnection::NetworkByteOutputStream::write(const uint8_t* buf, std
 }
 
 NetworkConnection::NetworkConnection(SendFunc sendFunc, RecvFunc recvFunc)
-    : inputStream_(recvFunc)
-    , outputStream_(sendFunc)
+    : inputStream_(recvFunc), outputStream_(sendFunc)
 {
 }
 
@@ -33,5 +34,4 @@ ByteOutputStream& NetworkConnection::getOutputStream()
 {
   return outputStream_;
 }
-
 }

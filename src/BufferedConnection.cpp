@@ -4,8 +4,7 @@
 namespace OpenSofa {
 
 BufferedConnection::QueueThread::QueueThread()
-    : threadRunning_(true)
-    , thread_(&BufferedConnection::QueueThread::run, this)
+    : threadRunning_(true), thread_(&BufferedConnection::QueueThread::run, this)
 {
 }
 
@@ -16,8 +15,7 @@ BufferedConnection::QueueThread::~QueueThread()
 }
 
 BufferedConnection::BufferedByteInputStream::BufferedByteInputStream(ByteInputStream& inputStream)
-    : inputStream_(inputStream)
-    , currentBufferCursor_(0)
+    : inputStream_(inputStream), currentBufferCursor_(0)
 {
 }
 
@@ -89,8 +87,8 @@ size_t BufferedConnection::BufferedByteOutputStream::write(const uint8_t* buf, s
 }
 
 BufferedConnection::BufferedConnection(Connection& lowerConnection)
-    : inputStream_(lowerConnection.getInputStream())
-    , outputStream_(lowerConnection.getOutputStream())
+    : inputStream_(lowerConnection.getInputStream()),
+      outputStream_(lowerConnection.getOutputStream())
 {
 }
 

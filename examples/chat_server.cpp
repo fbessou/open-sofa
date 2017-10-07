@@ -1,5 +1,5 @@
-#include "TCPServer.hpp"
 #include "BufferedConnection.hpp"
+#include "TCPServer.hpp"
 #include <cstring>
 #include <iostream>
 #include <memory>
@@ -11,10 +11,7 @@ using namespace OpenSofa;
 class CallbackConnection : public Server::ConnectionListener {
 public:
   CallbackConnection(Server* server)
-      : clientConnected(false)
-      , clientId(0)
-      , server(server)
-      , cnx(nullptr)
+      : clientConnected(false), clientId(0), server(server), cnx(nullptr)
   {
   }
   void onConnected(unsigned int id)
