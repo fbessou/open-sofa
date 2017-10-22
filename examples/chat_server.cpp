@@ -37,11 +37,8 @@ public:
 std::unique_ptr<Server> srv;
 std::shared_ptr<CallbackConnection> cc;
 
-void initServer()
+void initServer(unsigned short port)
 {
-  unsigned short port;
-  cout << "Server port: " << endl;
-  cin >> port;
   srv.reset(new TCPServer{ port });
   srv->start();
   cc.reset(new CallbackConnection(srv.get()));
@@ -50,7 +47,15 @@ void initServer()
 
 int main(int argc, char** argv)
 {
-  initServer();
+  unsigned short port;
+  if(argc > 1) {
+    port = (unsigned short) atoi(argv[1]);
+  }
+  else {
+    cout << "Server port: " << endl;
+    cin >> port;
+  }
+  initServer(port);
   string line;
   uint8_t buf[1024];
   while (getline(std::cin, line)) {
