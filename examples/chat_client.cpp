@@ -27,7 +27,7 @@ int main(int argc, char** argv)
   auto cnx_nobuf = client->connect();
   auto cnx = new BufferedConnection(*cnx_nobuf);
   while (getline(std::cin, line)) {
-    cnx->getOutputStream().write((const uint8_t*)line.c_str(), line.size() + 1);
+    cnx->getOutputStream().write((const uint8_t*)line.c_str(), line.size());
     int size = cnx->getInputStream().read(buf, 1024 - 1);
     buf[size] = 0;
     std::cout << "\e[33m\"" << (char*)buf << "\"\e[0m" << std::endl;

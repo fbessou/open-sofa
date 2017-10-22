@@ -61,7 +61,7 @@ int main(int argc, char** argv)
   while (getline(std::cin, line)) {
     if (line.size() && cc->clientConnected) {
       auto cnx = cc->cnx;
-      cnx->getOutputStream().write((const uint8_t*)line.c_str(), line.size() + 1);
+      cnx->getOutputStream().write((const uint8_t*)line.c_str(), line.size());
     }
     if (cc->clientConnected) {
       auto cnx = cc->cnx;
