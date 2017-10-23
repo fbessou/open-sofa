@@ -17,12 +17,13 @@ set(CMAKE_CXX_STANDARD 11)
 
 # source files
 include_directories(include)
-set(PROJECT_SRC )
+set(PROJECT_SRC
+    "src/Document.cpp"
+)
 
 add_library(${TARGET_LIBRARY_NAME} ${PROJECT_SRC})
+
 
 target_include_directories (${TARGET_LIBRARY_NAME} PRIVATE ${BSON_STATIC_INCLUDE_DIRS})
 target_link_libraries (${TARGET_LIBRARY_NAME} PRIVATE ${BSON_STATIC_LIBRARIES})
 target_compile_definitions (${TARGET_LIBRARY_NAME} PRIVATE ${BSON_STATIC_DEFINITIONS})
-
-
