@@ -1,6 +1,6 @@
 #pragma once
 
-#include "Stream.hpp"
+#include "ByteIOStream.hpp"
 #include <memory>
 
 namespace OpenSofa {
