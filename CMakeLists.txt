@@ -4,6 +4,8 @@ project (OpenSofa)
 set(TARGET_LIBRARY_NAME opensofa)
 set(CMAKE_CXX_STANDARD 11)
 
+option(TEST "Build & run tests" OFF)
+
 # dependencies
 set(THREADS_PREFER_PTHREAD_FLAG ON)
 find_package(Threads REQUIRED)
@@ -22,8 +24,10 @@ add_library(${TARGET_LIBRARY_NAME} ${PROJECT_SRC})
 target_link_libraries(${TARGET_LIBRARY_NAME} Threads::Threads)
 
 # test
-enable_testing()
-add_subdirectory(test)
+if(TEST)
+  enable_testing()
+  add_subdirectory(test)
+endif()
 
 # Examples
 add_subdirectory(examples)
