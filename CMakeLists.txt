@@ -11,11 +11,13 @@ set(THREADS_PREFER_PTHREAD_FLAG ON)
 find_package(Threads REQUIRED)
 
 # source files
+include_directories("msgpack-c/include")
 include_directories(include)
 set(PROJECT_SRC
   "src/TCPServer.cpp"
   "src/TCPClient.cpp"
   "src/SyncQueue.cpp"
+  "src/MessagePackIOStream.cpp"
   "src/NetworkConnection.cpp"
   "src/BufferedConnection.cpp")
 
