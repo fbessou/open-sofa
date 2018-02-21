@@ -52,6 +52,18 @@ public:
   }
 };
 
+class DummyByteOutputStream : public ByteOutputStream {
+public:
+  DummyByteOutputStream() : len{0} {}
+  void close() { }
+  size_t write(const uint8_t* buf, std::size_t count) {
+    memcpy(buffer+len, buf, count);
+    len += count;
+  }
+  uint8_t buffer[1024];
+  size_t len;
+};
+
 TEST(DummyForBIStream, CanPackVector)
 {
   DummyByteInputStream is;
@@ -72,6 +84,22 @@ TEST(ObjectHandleInputStream, CanReadFromInputStream)
   
   obj.convert(actual);
   ASSERT_EQ(actual, INPUT_VECT) << "Vector is not the same !! ";
+}
+
+TEST(ObjectHandleOutputStream, CanWriteToOutputStream)
+{
+  DummyByteOutputStream os;
+  OpenSofa::ObjectHandleOutputStream stream(os);
+  std::unique_ptr<msgpack::zone> zone(new msgpack::zone);
+  msgpack::object obj(INPUT_VECT, *zone);
+  msgpack::object_handle objh(obj, std::move(zone));
+
+  stream.write(objh);
+  auto* actual_buffer = os.buffer;
+  auto actual_size = os.len;
+
+  ASSERT_EQ(actual_size, INPUT_VEC_PACKED_SIZE);
+  ASSERT_TRUE(memcmp(INPUT_VEC_PACKED, actual_buffer, actual_size) == 0);
 }
 
 }

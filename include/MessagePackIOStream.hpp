@@ -19,6 +19,7 @@ class ObjectHandleOutputStream {
 public:
   ObjectHandleOutputStream(ByteOutputStream& os);
   size_t write(const msgpack::object_handle&);
+  size_t write(const char* buf, size_t s); // UGLY!!!
 private:
   ByteOutputStream& bos;
 };
