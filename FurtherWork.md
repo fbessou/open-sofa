@@ -9,3 +9,5 @@ Passing C++ 11 functions by const/reference as function parameter.
   big msg with STR and BIN:
     -> buffer: avoid copy of buffer, care of segmented data
     -> msgpack: unpack referenced
+
+Bloking / non-blocking stream

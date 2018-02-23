@@ -10,6 +10,7 @@ class ObjectHandleInputStream {
 public:
   ObjectHandleInputStream(ByteInputStream& is);
   msgpack::object_handle read();
+
 private:
   ByteInputStream& bis;
   msgpack::unpacker unpacker;
