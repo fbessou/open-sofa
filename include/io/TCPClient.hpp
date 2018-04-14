@@ -2,6 +2,7 @@
 #include "Connection.hpp"
 
 namespace OpenSofa {
+namespace io {
 
 class TCPClient : public Client {
 public:
@@ -16,4 +17,4 @@ private:
   std::size_t sendNetwork(const uint8_t* buf, std::size_t count, unsigned int dst);
   std::size_t recvNetwork(uint8_t* buf, std::size_t count, unsigned int dst);
 };
-}
+}}

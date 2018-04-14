@@ -1,6 +1,6 @@
-#include "NetworkConnection.hpp"
+#include "io/NetworkConnection.hpp"
 
-namespace OpenSofa {
+using namespace  OpenSofa::io;
 
 NetworkConnection::NetworkByteInputStream::NetworkByteInputStream(RecvFunc recv) : recv_(recv)
 {
@@ -33,5 +33,4 @@ ByteInputStream& NetworkConnection::getInputStream()
 ByteOutputStream& NetworkConnection::getOutputStream()
 {
   return outputStream_;
-}
 }

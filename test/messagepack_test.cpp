@@ -1,9 +1,9 @@
-#include "MessagePackIOStream.hpp"
+#include "io/MessagePackIOStream.hpp"
 
 #include <cstring>
 #include <gtest/gtest.h>
 
-using namespace OpenSofa;
+using namespace OpenSofa::io;
 
 namespace {
 std::vector<std::string> INPUT_VECT{ "ABC", "123" };
@@ -85,7 +85,7 @@ TEST(DummyForBIStream, CanPackVector)
 TEST(ObjectHandleInputStream, CanReadFromInputStream)
 {
   DummyByteInputStream is;
-  OpenSofa::ObjectHandleInputStream stream(is);
+  ObjectHandleInputStream stream(is);
   auto objh = stream.read();
   auto obj = objh.get();
   std::vector<std::string> actual;
@@ -97,7 +97,7 @@ TEST(ObjectHandleInputStream, CanReadFromInputStream)
 TEST(ObjectHandleOutputStream, CanWriteToOutputStream)
 {
   DummyByteOutputStream os;
-  OpenSofa::ObjectHandleOutputStream stream(os);
+  ObjectHandleOutputStream stream(os);
   std::unique_ptr<msgpack::zone> zone(new msgpack::zone);
   msgpack::object obj(INPUT_VECT, *zone);
   msgpack::object_handle objh(obj, std::move(zone));

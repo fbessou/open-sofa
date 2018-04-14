@@ -7,6 +7,7 @@
 #include <memory>
 
 namespace OpenSofa {
+namespace io {
 
 class NetworkConnection : public Connection {
 public:
@@ -49,4 +50,4 @@ private:
   NetworkByteInputStream inputStream_;
   NetworkByteOutputStream outputStream_;
 };
-}
+}}

@@ -1,10 +1,10 @@
-#include "BufferedConnection.hpp"
-#include "TCPServer.hpp"
+#include "io/BufferedConnection.hpp"
+#include "io/TCPServer.hpp"
 #include <algorithm>
 #include <cstdio>
 #include <unistd.h>
 using namespace std;
-using namespace OpenSofa;
+using namespace OpenSofa::io;
 
 class CallbackConnection : public Server::ConnectionListener {
 public:

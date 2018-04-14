@@ -9,6 +9,7 @@
 #include "Server.hpp"
 
 namespace OpenSofa {
+namespace io {
 
 class TCPServer : public Server {
 public:
@@ -32,4 +33,4 @@ private:
   std::size_t sendNetwork(const uint8_t* buf, std::size_t count, unsigned int dst);
   std::size_t recvNetwork(uint8_t* buf, std::size_t count, unsigned int dst);
 };
-}
+}}

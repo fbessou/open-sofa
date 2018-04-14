@@ -1,9 +1,9 @@
-#include "TCPClient.hpp"
+#include "io/TCPClient.hpp"
 
-#include "BufferedConnection.hpp"
+#include "io/BufferedConnection.hpp"
 #include <iostream>
 
-using namespace OpenSofa;
+using namespace OpenSofa::io;
 
 std::unique_ptr<Client> client;
 int main(int argc, char** argv)

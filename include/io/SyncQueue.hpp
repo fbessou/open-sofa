@@ -6,6 +6,7 @@
 #include <queue>
 
 namespace OpenSofa {
+namespace io {
 
 template <typename T>
 class SyncQueue {
@@ -80,4 +81,4 @@ bool SyncQueue<T>::empty()
   std::unique_lock<std::mutex> lock(mutex_);
   return queue_.empty();
 }
-}
+}}

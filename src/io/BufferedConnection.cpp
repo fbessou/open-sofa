@@ -1,7 +1,7 @@
-#include "BufferedConnection.hpp"
+#include "io/BufferedConnection.hpp"
 #include <cstring>
 
-namespace OpenSofa {
+using namespace OpenSofa::io;
 
 BufferedConnection::QueueThread::QueueThread()
     : threadRunning_(true), thread_(&BufferedConnection::QueueThread::run, this)
@@ -100,5 +100,4 @@ ByteInputStream& BufferedConnection::getInputStream()
 ByteOutputStream& BufferedConnection::getOutputStream()
 {
   return outputStream_;
-}
 }

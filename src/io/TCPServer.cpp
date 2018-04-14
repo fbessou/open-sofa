@@ -1,5 +1,5 @@
-#include "TCPServer.hpp"
-#include "NetworkConnection.hpp"
+#include "io/TCPServer.hpp"
+#include "io/NetworkConnection.hpp"
 #include <cstring>
 #include <errno.h>
 #include <fcntl.h>
@@ -10,7 +10,7 @@
 #include <sys/types.h>
 #include <unistd.h>
 
-namespace OpenSofa {
+using namespace OpenSofa::io;
 
 TCPServer::TCPServer(unsigned short port) : port(port)
 {
@@ -97,5 +97,4 @@ std::size_t TCPServer::recvNetwork(uint8_t* buf, std::size_t count, unsigned int
   ssize_t rs = ::recv(dst, buf, count, 0);
   // FIXME Handle error where rs < 0
   return rs;
-}
 }

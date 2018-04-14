@@ -7,10 +7,10 @@
 #include <termios.h>
 #include <unistd.h>
 
-#include "BufferedConnection.hpp"
-#include "TCPClient.hpp"
+#include "io/BufferedConnection.hpp"
+#include "io/TCPClient.hpp"
 
-using namespace OpenSofa;
+using namespace OpenSofa::io;
 
 enum class Key {
   UP,

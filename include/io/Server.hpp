@@ -3,6 +3,7 @@
 #include <memory>
 
 namespace OpenSofa {
+namespace io {
 
 class Server {
 public:
@@ -23,4 +24,4 @@ public:
 
   virtual std::map<unsigned int, Connection::Ptr> getConnections() const = 0;
 };
-}
+}}

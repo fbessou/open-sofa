@@ -14,12 +14,12 @@ find_package(Threads REQUIRED)
 include_directories("msgpack-c/include")
 include_directories(include)
 set(PROJECT_SRC
-  "src/TCPServer.cpp"
-  "src/TCPClient.cpp"
-  "src/SyncQueue.cpp"
-  "src/MessagePackIOStream.cpp"
-  "src/NetworkConnection.cpp"
-  "src/BufferedConnection.cpp")
+  "src/io/TCPServer.cpp"
+  "src/io/TCPClient.cpp"
+  "src/io/SyncQueue.cpp"
+  "src/io/MessagePackIOStream.cpp"
+  "src/io/NetworkConnection.cpp"
+  "src/io/BufferedConnection.cpp")
 
 # library
 add_library(${TARGET_LIBRARY_NAME} ${PROJECT_SRC})

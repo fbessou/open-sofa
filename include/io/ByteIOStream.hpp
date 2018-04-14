@@ -4,6 +4,7 @@
 #include <cstdint>
 
 namespace OpenSofa {
+namespace io {
 
 class ByteInputStream {
 public:
@@ -16,4 +17,4 @@ public:
   virtual size_t write(const uint8_t* buf, std::size_t count) = 0;
   virtual void close() = 0;
 };
-}
+}}

@@ -1,6 +1,6 @@
-#include "MessagePackIOStream.hpp"
+#include "io/MessagePackIOStream.hpp"
 
-using namespace OpenSofa;
+using namespace OpenSofa::io;
 
 ObjectHandleInputStream::ObjectHandleInputStream(ByteInputStream& is)
     : bis(is),

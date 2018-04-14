@@ -6,6 +6,8 @@
 #include <msgpack.hpp>
 
 namespace OpenSofa {
+namespace io {
+
 class ObjectHandleInputStream {
 public:
   ObjectHandleInputStream(ByteInputStream& is);
@@ -24,4 +26,4 @@ public:
 private:
   ByteOutputStream& bos;
 };
-}
+}}

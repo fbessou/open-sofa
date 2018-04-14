@@ -4,6 +4,7 @@
 #include <memory>
 
 namespace OpenSofa {
+namespace io {
 
 class Connection {
 public:
@@ -12,4 +13,4 @@ public:
   virtual ByteInputStream& getInputStream() = 0;
   virtual ByteOutputStream& getOutputStream() = 0;
 };
-}
+}}

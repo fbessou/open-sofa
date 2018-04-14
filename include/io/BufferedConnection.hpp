@@ -8,6 +8,8 @@
 #include <thread>
 
 namespace OpenSofa {
+namespace io {
+
 class BufferedConnection : public Connection {
 private:
   class QueueThread {
@@ -62,4 +64,4 @@ private:
   BufferedByteInputStream inputStream_;
   BufferedByteOutputStream outputStream_;
 };
-}
+}}

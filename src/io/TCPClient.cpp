@@ -1,13 +1,13 @@
-#include "TCPClient.hpp"
-#include "NetworkConnection.hpp"
-#include "TCPServer.hpp"
+#include "io/TCPClient.hpp"
+#include "io/NetworkConnection.hpp"
+#include "io/TCPServer.hpp"
 
 #include <fcntl.h>
 #include <functional>
 #include <netdb.h>
 #include <unistd.h>
 
-namespace OpenSofa {
+using namespace OpenSofa::io;
 
 TCPClient::TCPClient(const std::string& hostname, unsigned short port)
     : hostname_(hostname), port_(port)
@@ -60,5 +60,4 @@ std::size_t TCPClient::recvNetwork(uint8_t* buf, std::size_t count, unsigned int
   ssize_t rs = ::recv(dst, buf, count, 0);
   // FIXME Handle error where rs < 0
   return rs;
-}
 }
