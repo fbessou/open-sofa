@@ -2,7 +2,7 @@ cmake_minimum_required (VERSION 2.6)
 
 project (OpenSofa)
 set(TARGET_LIBRARY_NAME opensofa)
-set(CMAKE_CXX_STANDARD 11)
+set(CMAKE_CXX_STANDARD 17)
 
 option(TEST "Build & run tests" OFF)
 
@@ -14,6 +14,8 @@ find_package(Threads REQUIRED)
 include_directories("msgpack-c/include")
 include_directories(include)
 set(PROJECT_SRC
+  "src/Client.cpp"
+  "src/Event.cpp"
   "src/io/TCPServer.cpp"
   "src/io/TCPClient.cpp"
   "src/io/SyncQueue.cpp"

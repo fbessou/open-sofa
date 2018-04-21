@@ -13,6 +13,7 @@ class SyncQueue {
 public:
   //! Add item at end
   void push(const T& v);
+  void push(T&& v);
 
   //! Retrieve an item from the queue if any
   bool peek(T& out);
@@ -41,6 +42,14 @@ void SyncQueue<T>::push(const T& v)
 }
 
 template <typename T>
+void SyncQueue<T>::push(T&& v)
+{
+  std::unique_lock<std::mutex> lock(mutex_);
+  queue_.push(std::move(v));
+  cond_.notify_one();
+}
+
+template <typename T>
 bool SyncQueue<T>::peek(T& out)
 {
   std::unique_lock<std::mutex> lock(mutex_);
@@ -48,7 +57,7 @@ bool SyncQueue<T>::peek(T& out)
   if (queue_.empty())
     return false;
 
-  out = queue_.front();
+  out = std::move(queue_.front());
   queue_.pop();
   return true;
 }

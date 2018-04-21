@@ -16,17 +16,27 @@ public:
   TCPServer(unsigned short port = 9876);
   void start();
   void stop();
-  void setConnectionListener(const std::shared_ptr<ConnectionListener>& listener);
+  void setConnectionListener(const Server::OnConnectedCallback& conn, const Server::OnDisconnectedCallback& disc);
   std::map<unsigned int, Connection::Ptr> getConnections() const;
 
 private:
+  struct ConnectionListener {
+    const Server::OnConnectedCallback onConnected;
+    const Server::OnDisconnectedCallback onDisconnected;
+
+    ConnectionListener(const Server::OnConnectedCallback& conn, const Server::OnDisconnectedCallback& disc)
+      : onConnected(conn), onDisconnected(disc)
+    {
+    }
+  };
+
   void startAccept();
   void stopAccept();
   void runAccept();
   void accept(unsigned int hAccept);
   unsigned short port;
   int listenSocket;
-  std::shared_ptr<ConnectionListener> connectionListener_;
+  std::optional<ConnectionListener> connectionListener_;
   std::unique_ptr<std::thread> acceptThread_;
   bool acceptThreadRunning_;
   std::map<unsigned int, Connection::Ptr> connections_;

@@ -6,28 +6,17 @@
 using namespace std;
 using namespace OpenSofa::io;
 
-class CallbackConnection : public Server::ConnectionListener {
-public:
-  CallbackConnection(Server* server) : server(server)
-  {
-  }
-  void onConnected(unsigned int id)
-  {
-    printf("\a\n");
-    cnx.push_back(new BufferedConnection(*server->getConnections()[id]));
-  }
-  void onDisconnected(unsigned int id)
-  {
-  }
-  Server* server;
-  vector<Connection*> cnx;
-};
+vector<Connection*> cnx;
+void onConnected(unsigned int id, const std::shared_ptr<Connection>& cc)
+{
+  printf("\a\n");
+  cnx.push_back(new BufferedConnection(*cc)); // ! \\ unreferencing shared_ptr !?
+}
 int main(int argc, char** argv)
 {
   TCPServer srv(atoi(argv[1]));
+  srv.setConnectionListener(onConnected, [](unsigned int) {});
   srv.start();
-  std::shared_ptr<CallbackConnection> cc(new CallbackConnection(&srv));
-  srv.setConnectionListener(cc);
   bool ended = false;
   const int pw = 5;
   int h = 20, w = 50;
@@ -41,7 +30,7 @@ int main(int argc, char** argv)
     bool a = true;
     while (a) {
       a = false;
-      for (auto& c : cc->cnx) {
+      for (auto& c : cnx) {
         uint8_t buf[2];
         int s = c->getInputStream().read(buf, 2);
         if (!s)

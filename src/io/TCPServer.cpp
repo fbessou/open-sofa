@@ -43,9 +43,9 @@ void TCPServer::stop()
   close(listenSocket);
 }
 
-void TCPServer::setConnectionListener(const std::shared_ptr<ConnectionListener>& listener)
+void TCPServer::setConnectionListener(const Server::OnConnectedCallback& onConnected, const Server::OnDisconnectedCallback& onDisconnected)
 {
-  connectionListener_ = listener;
+  connectionListener_.emplace(onConnected, onDisconnected);
 }
 
 std::map<unsigned int, Connection::Ptr> TCPServer::getConnections() const
@@ -84,7 +84,8 @@ void TCPServer::accept(unsigned int hAccept)
   auto recvFunc = std::bind(&TCPServer::recvNetwork, this, _1, _2, hAccept);
   connections_[hAccept].reset(new NetworkConnection(sendFunc, recvFunc));
 
-  connectionListener_->onConnected(hAccept);
+  if(connectionListener_)
+    connectionListener_->onConnected(hAccept, connections_[hAccept]);
 }
 
 std::size_t TCPServer::sendNetwork(const uint8_t* buf, std::size_t count, unsigned int dst)
