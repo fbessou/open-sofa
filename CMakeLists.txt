@@ -15,6 +15,7 @@ include_directories("msgpack-c/include")
 include_directories(include)
 set(PROJECT_SRC
   "src/Client.cpp"
+  "src/Server.cpp"
   "src/Event.cpp"
   "src/io/TCPServer.cpp"
   "src/io/TCPClient.cpp"

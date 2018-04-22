@@ -11,6 +11,7 @@
 #include <string>
 #include <optional>
 #include <thread>
+#include <map>
 
 
 namespace OpenSofa {
@@ -26,12 +27,14 @@ class Server {
     std::optional<ServerEvent> pollEvent();
 
   private:
-    void loop();
+    void clientLoop(const io::Connection::Ptr& connection);
+    void onClientConnected(unsigned int id, const io::Connection::Ptr& connection);
+    void onClientDisconnected(unsigned int id);
 
   private:
     const std::string uuid;
     io::TCPServer tcpServer_;
-    std::map<std::string, std::thread> threads_;
+    std::map<unsigned int, std::thread> threads_;
     std::map<std::string, io::ObjectHandleOutputStream> outputStreams_;
     io::SyncQueue<ServerEvent> events_;
 };

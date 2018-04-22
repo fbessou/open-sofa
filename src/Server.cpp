@@ -13,31 +13,35 @@ Server::Server(unsigned short port, const std::string& uuid)
 void Server::start()
 {
   tcpServer_.setConnectionListener(
-      std::bind(&Server::onClientConnected, this, _1),
+      std::bind(&Server::onClientConnected, this, _1, _2),
       std::bind(&Server::onClientDisconnected, this, _1));
   tcpServer_.start();
 }
 
-void Server::onClientConnected(unsigned int id, const Connection::Ptr& connection)
+void Server::onClientConnected(unsigned int id, const io::Connection::Ptr& connection)
 {
-  clientThread = std::thread(&Server::clientLoop, this, connection);
+  threads_[id] = std::thread(&Server::clientLoop, this, connection);
 }
 
 void Server::onClientDisconnected(unsigned int id)
 {
+  const auto& thread = threads_.find(id);
+  if(thread != threads_.end()) {
+    threads_.erase(thread);
+  }
 }
 
 bool Server::send(const std::string& uuid, const msgpack::object_handle& message)
 {
-  auto outputStream = outputStreams_.find(uuid);
+  auto outputStream = outputStreams_.find(uuid); // TODO mutex on ouputStream
   if (outputStream == outputStreams_.end())
-    return false
+    return false;
 
-  outputStreams_->write(message);
+  outputStream->second.write(message);
   return true;
 }
 
-void Server::clientLoop(const Connection::Ptr& connection)
+void Server::clientLoop(const io::Connection::Ptr& connection)
 {
 //  auto inputStream = io::ObjectHandleInputStream(connection->getInputStream());
 //  auto event = ServerEvent(uuid, Event(event::Connected());
@@ -58,11 +62,11 @@ void Server::clientLoop(const Connection::Ptr& connection)
 //  }
 }
 
-std::optional<Event> Server::pollEvent()
+std::optional<ServerEvent> Server::pollEvent()
 {
-  Event event;
+  ServerEvent event;
   if (events_.peek(event)) {
-    return std::optional<Event>(std::move(event));
+    return std::optional<ServerEvent>(std::move(event));
   }
   return {};
 }
