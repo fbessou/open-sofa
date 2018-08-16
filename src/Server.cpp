@@ -1,4 +1,5 @@
 #include "Server.hpp"
+#include "Message.hpp"
 
 #include <utility>
 
@@ -6,7 +7,7 @@ using namespace OpenSofa;
 using namespace std::placeholders;
 
 Server::Server(unsigned short port, const std::string& uuid)
-  : tcpServer_(port), uuid(uuid)
+  : tcpServer_(port), uuid(uuid), msg_factory()
 {
 }
 
@@ -31,35 +32,37 @@ void Server::onClientDisconnected(unsigned int id)
   }
 }
 
-bool Server::send(const std::string& uuid, const msgpack::object_handle& message)
+void Server::onClientRegistered(const std::string& uuid, io::ByteOutputStream& byteOutputStream)
 {
-  auto outputStream = outputStreams_.find(uuid); // TODO mutex on ouputStream
-  if (outputStream == outputStreams_.end())
-    return false;
+  outputStreams_[uuid] = std::make_unique<io::ObjectHandleOutputStream>(byteOutputStream);
+}
 
-  outputStream->second.write(message);
-  return true;
+void Server::onClientUnregistered(const std::string& uuid)
+{
+  outputStreams_.erase(uuid);
 }
 
 void Server::clientLoop(const io::Connection::Ptr& connection)
 {
-//  auto inputStream = io::ObjectHandleInputStream(connection->getInputStream());
-//  auto event = ServerEvent(uuid, Event(event::Connected());
-//  outputStream_.emplace(connection->getOutputStream());
-//  events_.push(std::move(event));
-//  int clientState = 0;
-//  while(true) {
-//      switch(clientState):
-//        case 0:
-//          outputStream.write("Hey ! What is your UUID ?");
-//          auto uuid = inputStream.read();
-//          clientState = 1;
-//          break;
-//        case 1:
-//          auto objectHandle = inputStream.read();
-//          events_.push(Event(event::Message(std::move(objectHandle))));
-//    }
-//  }
+  auto inputStream = io::ObjectHandleInputStream(connection->getInputStream());
+  auto event = ServerEvent(uuid, Event(event::Connected()));
+  //outputStream_.emplace(connection->getOutputStream());
+  events_.push(std::move(event));
+  int clientState = 0;
+  while(true) {
+    switch(clientState) {
+      case 0: { // CONNECTED
+        auto objh = inputStream.read();
+        auto registerMsg = objh.get().as<RegisterMsg>();
+        onClientRegistered(registerMsg.uuid, connection->getOutputStream());
+        send(registerMsg.uuid, msg_factory.createRegistered().get());
+        clientState = 1;
+        } break;
+      case 1: // REGISTERED
+        auto objectHandle = inputStream.read();
+        //events_.push(Event(event::Message(std::move(objectHandle))));
+    }
+  }
 }
 
 std::optional<ServerEvent> Server::pollEvent()

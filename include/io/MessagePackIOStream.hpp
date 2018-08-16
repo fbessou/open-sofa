@@ -21,7 +21,14 @@ private:
 class ObjectHandleOutputStream {
 public:
   ObjectHandleOutputStream(ByteOutputStream& os);
-  size_t write(const msgpack::object_handle&);
+  
+  template <typename T>
+  inline size_t write(const T& obj)
+  { 
+    msgpack::pack(*this, obj);
+    return 1;
+  }
+  
   size_t write(const char* buf, size_t s); // UGLY!!!
 private:
   ByteOutputStream& bos;

@@ -100,9 +100,8 @@ TEST(ObjectHandleOutputStream, CanWriteToOutputStream)
   ObjectHandleOutputStream stream(os);
   std::unique_ptr<msgpack::zone> zone(new msgpack::zone);
   msgpack::object obj(INPUT_VECT, *zone);
-  msgpack::object_handle objh(obj, std::move(zone));
 
-  stream.write(objh);
+  stream.write(obj);
   auto* actual_buffer = os.buffer;
   auto actual_size = os.len;
 

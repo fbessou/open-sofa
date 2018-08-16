@@ -27,12 +27,6 @@ ObjectHandleOutputStream::ObjectHandleOutputStream(ByteOutputStream& os) : bos(o
 {
 }
 
-size_t ObjectHandleOutputStream::write(const msgpack::object_handle& objh)
-{
-  msgpack::pack(*this, objh.get());
-  return 1;
-}
-
 size_t ObjectHandleOutputStream::write(const char* buf, size_t s)
 {
   return bos.write(reinterpret_cast<const uint8_t*>(buf), s);

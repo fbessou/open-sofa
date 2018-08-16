@@ -11,3 +11,16 @@ Passing C++ 11 functions by const/reference as function parameter.
     -> msgpack: unpack referenced
 
 Bloking / non-blocking stream
+
+Client:
+  states: DISCONNECTED, CONNECTED, REGISTERED, [UNREGISTERED]
+  events: connected, rejected(uuid taken, no free slot), disconnected(timeout, closed by remote, close by local)
+
+Server:
+  states: ACCEPTING/REGISTERING
+  events: connected
+Server by client:
+  states: CONNECTED, REGISTERED, DISCONNECTED, [UNREGISTERED]
+  events: registered, disconnected(timeout, close by remote, close by local)
+
+Registration: uuid, [player/client info (name, color, ...)? -> gamepad version only]

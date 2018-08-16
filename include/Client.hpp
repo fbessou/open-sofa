@@ -21,6 +21,16 @@ class Client {
     void start();
     //! Synchronously send a Message event
     bool send(const msgpack::object_handle& message);
+    template<typename T>
+    bool send(const T& obj)
+    {
+      if (outputStream_) {
+        outputStream_->write(obj);
+        return true;
+      }
+      return false;
+    }
+
     //! Synchronously read an event or nothing
     std::optional<Event> pollEvent();
 

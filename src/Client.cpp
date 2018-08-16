@@ -1,4 +1,5 @@
 #include "Client.hpp"
+#include "Message.hpp"
 
 #include <utility>
 
@@ -14,15 +15,6 @@ void Client::start()
   thread_ = std::thread(&Client::loop, this);
 }
 
-bool Client::send(const msgpack::object_handle& message)
-{
-  if (outputStream_) {
-    outputStream_->write(message);
-    return true;
-  }
-  return false;
-}
-
 void Client::loop()
 {
   auto connection = tcpClient_.connect();
@@ -30,6 +22,12 @@ void Client::loop()
   auto event = Event(event::Connected());
   outputStream_.emplace(connection->getOutputStream());
   events_.push(std::move(event));
+
+  RegisterMsg registerMsg = {"Bob"};
+  std::unique_ptr<msgpack::zone> zone(new msgpack::zone);
+  msgpack::object obj(registerMsg, *zone);
+  msgpack::object_handle objh(obj, std::move(zone));
+
   
   while(true) {
     auto objectHandle = inputStream.read();
